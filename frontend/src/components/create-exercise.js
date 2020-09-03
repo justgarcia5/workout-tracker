@@ -8,6 +8,7 @@ export default function CreateExercise() {
     username: "",
     description: "",
     duration: 0,
+    date: ""
   });
   const [users, setUsers] = useState([]);
 
@@ -18,7 +19,23 @@ export default function CreateExercise() {
   },[]);
 
   const handleSubmit = e => {
-
+    e.preventDefault();
+    const newExercise = {
+      username: exercise.username,
+      description: exercise.description,
+      duration: exercise.duration,
+      date: startDate
+    }
+    fetch('http://localhost:3001/exercises/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newExercise),
+    }).then(res => res.json())
+      .then(data => console.log(`Success: ${data}`))
+      .catch(err => console.log(err))
+      window.location = '/';
   }
 
   const handleChange = e => {
@@ -34,7 +51,7 @@ export default function CreateExercise() {
 
   return(
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Username</label>
           <select className="form-control" value={exercise.username} name="username" onChange={handleChange}>
@@ -69,7 +86,7 @@ export default function CreateExercise() {
             value={exercise.duration}
             name="duration"
             className="form-control"
-            id="Duration"
+            id="duration"
             placeholder="Enter duration here..."
             onChange={handleChange}
           />
